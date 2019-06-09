@@ -110,7 +110,10 @@ public class MainActivity extends AppCompatActivity {
             double x = new Random().nextInt(10) / 10.0d;
             double y = new Random().nextInt(10) / 10.0d;
             customMarker.setCoordinate(new GeoCoordinate(59.9386 - x, 30.3141 - y, 12.0));
+            //customMarker = customMarker.setTitle("xyz");
+            customMarker = customMarker.setDescription(x + y + "");
             map.addMapObject(customMarker);
+
         }
     }
 
