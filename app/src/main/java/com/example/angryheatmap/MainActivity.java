@@ -12,17 +12,19 @@ import com.here.android.mpa.common.Image;
 import com.here.android.mpa.common.OnEngineInitListener;
 import com.here.android.mpa.mapping.Map;
 import com.here.android.mpa.mapping.MapMarker;
+import com.here.android.mpa.mapping.MapObject;
 import com.here.android.mpa.mapping.SupportMapFragment;
 import com.here.android.mpa.common.MapSettings;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
     private TextView mLogTextView;
     // map embedded in the map fragment
     private Map map = null;
-    private Map mapClone = null;
+    //private Map mapClone = null;
     // map fragment embedded in this activity
     private SupportMapFragment mapFragment = null;
 
@@ -72,7 +74,6 @@ public class MainActivity extends AppCompatActivity {
                             customMarker.setIcon(image);
                             map.addMapObject(customMarker);
                         } catch (IOException e) { }
-                        //initMap(map);
 
                         addSomeMarker();
                         addArrayOfMarkers();
@@ -96,8 +97,8 @@ public class MainActivity extends AppCompatActivity {
             MapMarker customMarker = new MapMarker();
             customMarker.setCoordinate(new GeoCoordinate(58.0, 30.0, 12.0));
             customMarker.setIcon(image);
-            if (mapClone != null) {
-                mapClone.addMapObject(customMarker);
+            if (map != null) {
+                map.addMapObject(customMarker);
             } else {
                 mLogTextView.setText("ERROR: map has NULL..");
             }
@@ -105,19 +106,110 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void addArrayOfMarkers() {
-        for (int i = 0; i < 10; i++) {
-            MapMarker customMarker = new MapMarker();
-            double x = new Random().nextInt(10) / 10.0d;
-            double y = new Random().nextInt(10) / 10.0d;
-            customMarker.setCoordinate(new GeoCoordinate(59.9386 - x, 30.3141 - y, 12.0));
-            //customMarker = customMarker.setTitle("xyz");
-            customMarker = customMarker.setDescription(x + y + "");
-            map.addMapObject(customMarker);
+        ArrayList<MapObject> customMarkers = new ArrayList<>();
 
-        }
-    }
+        MapMarker marker = new MapMarker();
+        marker.setCoordinate(new GeoCoordinate(59.9386, 30.3141));  //Saint Petersburg
+        marker.setTitle("Санкт-Петербург");
+        marker.setDescription("Информация");
+        customMarkers.add(marker);
 
-    private void initMap(Map map) {
-        mapClone = map;
+        marker = new MapMarker();
+        marker.setCoordinate(new GeoCoordinate(55.7522, 37.6156));  //Moscow
+        marker.setTitle("Москва");
+        marker.setDescription("Информация");
+        customMarkers.add(marker);
+
+        marker = new MapMarker();
+        marker.setCoordinate(new GeoCoordinate(68.9792, 33.0925));  //Murmansk
+        marker.setTitle("Мурманск");
+        marker.setDescription("Информация");
+        customMarkers.add(marker);
+
+        marker = new MapMarker();
+        marker.setCoordinate(new GeoCoordinate(47.2313, 39.7233));  //Rostov-on-Don
+        marker.setTitle("Ростов-на-Дону");
+        marker.setDescription("Информация");
+        customMarkers.add(marker);
+
+        marker = new MapMarker();
+        marker.setCoordinate(new GeoCoordinate(55.0415, 82.9346));  //Novosibirsk
+        marker.setTitle("Новосибирск");
+        marker.setDescription("Информация");
+        customMarkers.add(marker);
+
+        marker = new MapMarker();
+        marker.setCoordinate(new GeoCoordinate(54.9924, 73.3686));  //Omsk
+        marker.setTitle("Омск");
+        marker.setDescription("Информация");
+        customMarkers.add(marker);
+
+        marker = new MapMarker();
+        marker.setCoordinate(new GeoCoordinate(56.0184, 92.8672));  //Krasnoyarsk
+        marker.setTitle("Красноярск");
+        marker.setDescription("Информация");
+        customMarkers.add(marker);
+
+        marker = new MapMarker();
+        marker.setCoordinate(new GeoCoordinate(62.0339, 129.733));  //Yakutsk
+        marker.setTitle("Якутск");
+        marker.setDescription("Информация");
+        customMarkers.add(marker);
+
+        marker = new MapMarker();
+        marker.setCoordinate(new GeoCoordinate(58.0105, 56.2502));  //Perm
+        marker.setTitle("Пермь");
+        marker.setDescription("Информация");
+        customMarkers.add(marker);
+
+        marker = new MapMarker();
+        marker.setCoordinate(new GeoCoordinate(54.7431, 55.9678));  //Ufa
+        marker.setTitle("Уфа");
+        marker.setDescription("Информация");
+        customMarkers.add(marker);
+
+        marker = new MapMarker();
+        marker.setCoordinate(new GeoCoordinate(45.0448, 38.976));  //Krasnodar
+        marker.setTitle("Краснодар");
+        marker.setDescription("Информация");
+        customMarkers.add(marker);
+
+        marker = new MapMarker();
+        marker.setCoordinate(new GeoCoordinate(43.1056, 131.874));  //Vladivostok
+        marker.setTitle("Владивосток");
+        marker.setDescription("Информация");
+        customMarkers.add(marker);
+
+        marker = new MapMarker();
+        marker.setCoordinate(new GeoCoordinate(53.2001, 50.15));  //Samara
+        marker.setTitle("Самара");
+        marker.setDescription("Информация");
+        customMarkers.add(marker);
+
+        marker = new MapMarker();
+        marker.setCoordinate(new GeoCoordinate(46.3497, 48.0408));  //Astrakhan
+        marker.setTitle("Астрахань");
+        marker.setDescription("Информация");
+        customMarkers.add(marker);
+
+        marker = new MapMarker();
+        marker.setCoordinate(new GeoCoordinate(51.672, 39.1843));  //Voronej
+        marker.setTitle("Воронеж");
+        marker.setDescription("Информация");
+        customMarkers.add(marker);
+
+        marker = new MapMarker();
+        marker.setCoordinate(new GeoCoordinate(45.0428, 41.9734));  //Stavropol
+        marker.setTitle("Ставрополь");
+        marker.setDescription("Информация");
+        customMarkers.add(marker);
+
+        marker = new MapMarker();
+        marker.setCoordinate(new GeoCoordinate(52.0317, 113.501));  //Chita
+        marker.setTitle("Чита");
+        marker.setDescription("Информация");
+        customMarkers.add(marker);
+
+        map.addMapObjects(customMarkers);
     }
 }
