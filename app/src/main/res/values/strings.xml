@@ -1,4 +1,9 @@
 <resources>
-    <string name="app_name">Angry Heat Map</string>
-    <string name="log_title">Everything is work normally..)</string>
+    <string name="app_name">Open Data Map</string>
+    <string name="log_title">Everything is work normally..</string>
+
+    <string name="action_settings">Параметры</string>
+    <string name="action_volume">Объём заготовленной древесины</string>
+    <string name="action_fire">Сгорело лесных насаждений</string>
+    <string name="action_actions">Санитарно-оздоровительные мероприятия</string>
 </resources>

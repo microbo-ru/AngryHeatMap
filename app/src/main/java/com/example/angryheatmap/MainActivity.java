@@ -2,6 +2,7 @@ package com.example.angryheatmap;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -28,6 +29,12 @@ public class MainActivity extends AppCompatActivity {
     // map fragment embedded in this activity
     private SupportMapFragment mapFragment = null;
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        //return super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,11 +68,12 @@ public class MainActivity extends AppCompatActivity {
                         map.setCenter(new GeoCoordinate(59.9386, 30.3141, 12.0), Map.Animation.NONE);
                         // Set the zoom level to the average between min and max
                         map.setZoomLevel((map.getMaxZoomLevel() + map.getMinZoomLevel()) / 2);
-
+                        /*
                         MapMarker defaultMarker = new MapMarker();
                         defaultMarker.setCoordinate(new GeoCoordinate(59.9386, 30.3141, 12.0));
                         map.addMapObject(defaultMarker);
-
+                        */
+                        /*
                         try {
                             Image image = new Image();
                             image.setImageResource(R.drawable.marker);
@@ -74,8 +82,8 @@ public class MainActivity extends AppCompatActivity {
                             customMarker.setIcon(image);
                             map.addMapObject(customMarker);
                         } catch (IOException e) { }
-
-                        addSomeMarker();
+                        */
+                        //addSomeMarker();
                         addArrayOfMarkers();
                         //mLogTextView.setVisibility(View.INVISIBLE);
                         LinearLayout mainLayer = findViewById(R.id.linearLayOut);
