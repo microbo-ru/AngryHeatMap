@@ -1,1 +1,1 @@
-include ':app', ':HERE-sdk'
+include ':app', ':HERE-sdk', ':jsoup-1.12.1'

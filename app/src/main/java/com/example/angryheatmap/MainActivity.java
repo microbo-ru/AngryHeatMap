@@ -1,37 +1,52 @@
 package com.example.angryheatmap;
 
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
-import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.here.android.mpa.common.GeoCoordinate;
-import com.here.android.mpa.common.Image;
 import com.here.android.mpa.common.OnEngineInitListener;
 import com.here.android.mpa.mapping.Map;
 import com.here.android.mpa.mapping.MapMarker;
-import com.here.android.mpa.mapping.MapObject;
 import com.here.android.mpa.mapping.SupportMapFragment;
 import com.here.android.mpa.common.MapSettings;
+
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
+    // All capitals names of the Russian regions
+    private String[] regionsCapitals = new String[] {"moscow", "saint-petersburg", "rostov-na-donu", "maykop", "ufa", "omsk", "abakan", "samara",
+            "yakutsk", "gorno-altaysk", "ulan-ude", "makhachkala", "magas", "nal-chik", "elista", "cherkessk", "petrozavodsk", "syktyvkar", "simferopol",
+            "yoshkar-ola", "saransk", "vladikavkaz", "kazan", "kyzyl", "izhevsk", "groznyy", "cheboksary", "barnaul", "chita", "petropavlovsk-kamchatsky",
+            "krasnodar", "krasnoyarsk", "perm", "vladivostok", "stavropol", "khabarovsk", "blagoveshchensk", "arkhangel-sk", "astrakhan", "belgorod",
+            "bryansk", "vladimir", "volgograd", "vologda", "voronezh", "ivanovo", "irkutsk", "kaliningrad", "kaluga", "kemerovo", "kirov", "kostroma",
+            "kurgan", "kursk", "lipetsk", "magadan", "murmansk", "nizhniy-novgorod", "velikiy-novgorod", "novosibirsk", "orenburg", "orel", "penza",
+            "pskov", "ryazan", "saratov", "yuzhno-sakhalinsk", "yekaterinburg", "smolensk", "tambov", "tver", "tomsk", "tula", "tyumen", "ulyanovsk",
+            "chelyabinsk", "yaroslavl", "sevastopol", "birobidzhan", "nar-yan-mar", "khanty-mansiysk", "anadyr", "salekhard"};
+    // The constant part of the URL address
+    private final String URL_STRING = "https://time-in.ru/coordinates/";
+    // Logger
     private TextView mLogTextView;
+    // main layout of the MainActivity
+    private LinearLayout mainLayer;
     // map embedded in the map fragment
     private Map map = null;
-    //private Map mapClone = null;
     // map fragment embedded in this activity
     private SupportMapFragment mapFragment = null;
+    //Counter of MapMarkers created
+    private int count = 0;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        //return super.onCreateOptionsMenu(menu);
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
@@ -41,8 +56,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mLogTextView = findViewById(R.id.title);
+        mainLayer = findViewById(R.id.linearLayOut);
         initialize();
-        //addSomeMarkers();
     }
 
     private void initialize() {
@@ -65,32 +80,12 @@ public class MainActivity extends AppCompatActivity {
                         // retrieve a reference of the map from the map fragment
                         map = mapFragment.getMap();
                         // Set the map center to the St. Petersburg region (no animation)
-                        map.setCenter(new GeoCoordinate(59.9386, 30.3141, 12.0), Map.Animation.NONE);
+                        map.setCenter(new GeoCoordinate(59.9386, 30.3141, 12.0), Map.Animation.NONE); //Set the center in Piter
                         // Set the zoom level to the average between min and max
                         map.setZoomLevel((map.getMaxZoomLevel() + map.getMinZoomLevel()) / 2);
-                        /*
-                        MapMarker defaultMarker = new MapMarker();
-                        defaultMarker.setCoordinate(new GeoCoordinate(59.9386, 30.3141, 12.0));
-                        map.addMapObject(defaultMarker);
-                        */
-                        /*
-                        try {
-                            Image image = new Image();
-                            image.setImageResource(R.drawable.marker);
-                            MapMarker customMarker = new MapMarker();
-                            customMarker.setCoordinate(new GeoCoordinate(58.0, 32.0, 12.0));
-                            customMarker.setIcon(image);
-                            map.addMapObject(customMarker);
-                        } catch (IOException e) { }
-                        */
-                        //addSomeMarker();
+                        // Set all markers on the map
                         addArrayOfMarkers();
-                        //mLogTextView.setVisibility(View.INVISIBLE);
-                        LinearLayout mainLayer = findViewById(R.id.linearLayOut);
-                        mainLayer.removeView(mLogTextView);
-
                     } else {
-                        //System.out.println("ERROR: Cannot initialize Map Fragment");
                         mLogTextView.setText("ERROR: Cannot initialize Map Fragment");
                     }
                 }
@@ -98,126 +93,54 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void addSomeMarker() {     //Doesn't work. Wrong picture for marker.
-        try {
-            Image image = new Image();
-            image.setImageResource(R.drawable.ttv);
-            MapMarker customMarker = new MapMarker();
-            customMarker.setCoordinate(new GeoCoordinate(58.0, 30.0, 12.0));
-            customMarker.setIcon(image);
-            if (map != null) {
-                map.addMapObject(customMarker);
-            } else {
-                mLogTextView.setText("ERROR: map has NULL..");
-            }
-        } catch (IOException e) { }
+    private void addArrayOfMarkers() {
+        for (int i = 0; i < regionsCapitals.length; i++) {
+            new ParsingPageTask().execute(URL_STRING + regionsCapitals[i]);
+        }
     }
 
-    private void addArrayOfMarkers() {
-        ArrayList<MapObject> customMarkers = new ArrayList<>();
+    class ParsingPageTask extends AsyncTask<String, String, String[]> {
 
-        MapMarker marker = new MapMarker();
-        marker.setCoordinate(new GeoCoordinate(59.9386, 30.3141));  //Saint Petersburg
-        marker.setTitle("Санкт-Петербург");
-        marker.setDescription("Информация");
-        customMarkers.add(marker);
+        @Override
+        protected String[] doInBackground(String... strings) {
+            String latitude = null;
+            String longitude = null;
+            String height = null;
+            Document doc = null;
+            try {
+                doc = Jsoup.connect(strings[0]).get();
+                publishProgress("Добавляем на карту город: " + strings[0].substring(URL_STRING.length()));
+                Element element = doc.select("div.coordinates-city-info").first();
+                Elements divs = element.select("div");
+                String s1 = divs.get(1).text();
+                String s2 = divs.get(2).text();
+                latitude = s1.substring(s1.indexOf(":") + 2, s1.lastIndexOf(",")); //широта
+                longitude = s1.substring(s1.lastIndexOf(",") + 2);                 //долгота
+                height = s2.substring(s2.indexOf(":") + 2, s2.indexOf(" метр"));      //высота
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return new String[]{latitude, longitude, height};
+        }
 
-        marker = new MapMarker();
-        marker.setCoordinate(new GeoCoordinate(55.7522, 37.6156));  //Moscow
-        marker.setTitle("Москва");
-        marker.setDescription("Информация");
-        customMarkers.add(marker);
+        @Override
+        protected void onProgressUpdate(String... values) {
+            synchronized (mLogTextView) {
+                mLogTextView.setText(values[0]);
+            }
+        }
 
-        marker = new MapMarker();
-        marker.setCoordinate(new GeoCoordinate(68.9792, 33.0925));  //Murmansk
-        marker.setTitle("Мурманск");
-        marker.setDescription("Информация");
-        customMarkers.add(marker);
-
-        marker = new MapMarker();
-        marker.setCoordinate(new GeoCoordinate(47.2313, 39.7233));  //Rostov-on-Don
-        marker.setTitle("Ростов-на-Дону");
-        marker.setDescription("Информация");
-        customMarkers.add(marker);
-
-        marker = new MapMarker();
-        marker.setCoordinate(new GeoCoordinate(55.0415, 82.9346));  //Novosibirsk
-        marker.setTitle("Новосибирск");
-        marker.setDescription("Информация");
-        customMarkers.add(marker);
-
-        marker = new MapMarker();
-        marker.setCoordinate(new GeoCoordinate(54.9924, 73.3686));  //Omsk
-        marker.setTitle("Омск");
-        marker.setDescription("Информация");
-        customMarkers.add(marker);
-
-        marker = new MapMarker();
-        marker.setCoordinate(new GeoCoordinate(56.0184, 92.8672));  //Krasnoyarsk
-        marker.setTitle("Красноярск");
-        marker.setDescription("Информация");
-        customMarkers.add(marker);
-
-        marker = new MapMarker();
-        marker.setCoordinate(new GeoCoordinate(62.0339, 129.733));  //Yakutsk
-        marker.setTitle("Якутск");
-        marker.setDescription("Информация");
-        customMarkers.add(marker);
-
-        marker = new MapMarker();
-        marker.setCoordinate(new GeoCoordinate(58.0105, 56.2502));  //Perm
-        marker.setTitle("Пермь");
-        marker.setDescription("Информация");
-        customMarkers.add(marker);
-
-        marker = new MapMarker();
-        marker.setCoordinate(new GeoCoordinate(54.7431, 55.9678));  //Ufa
-        marker.setTitle("Уфа");
-        marker.setDescription("Информация");
-        customMarkers.add(marker);
-
-        marker = new MapMarker();
-        marker.setCoordinate(new GeoCoordinate(45.0448, 38.976));  //Krasnodar
-        marker.setTitle("Краснодар");
-        marker.setDescription("Информация");
-        customMarkers.add(marker);
-
-        marker = new MapMarker();
-        marker.setCoordinate(new GeoCoordinate(43.1056, 131.874));  //Vladivostok
-        marker.setTitle("Владивосток");
-        marker.setDescription("Информация");
-        customMarkers.add(marker);
-
-        marker = new MapMarker();
-        marker.setCoordinate(new GeoCoordinate(53.2001, 50.15));  //Samara
-        marker.setTitle("Самара");
-        marker.setDescription("Информация");
-        customMarkers.add(marker);
-
-        marker = new MapMarker();
-        marker.setCoordinate(new GeoCoordinate(46.3497, 48.0408));  //Astrakhan
-        marker.setTitle("Астрахань");
-        marker.setDescription("Информация");
-        customMarkers.add(marker);
-
-        marker = new MapMarker();
-        marker.setCoordinate(new GeoCoordinate(51.672, 39.1843));  //Voronej
-        marker.setTitle("Воронеж");
-        marker.setDescription("Информация");
-        customMarkers.add(marker);
-
-        marker = new MapMarker();
-        marker.setCoordinate(new GeoCoordinate(45.0428, 41.9734));  //Stavropol
-        marker.setTitle("Ставрополь");
-        marker.setDescription("Информация");
-        customMarkers.add(marker);
-
-        marker = new MapMarker();
-        marker.setCoordinate(new GeoCoordinate(52.0317, 113.501));  //Chita
-        marker.setTitle("Чита");
-        marker.setDescription("Информация");
-        customMarkers.add(marker);
-
-        map.addMapObjects(customMarkers);
+        @Override
+        protected void onPostExecute(String[] strings) {
+            MapMarker marker = new MapMarker();
+            marker.setCoordinate(new GeoCoordinate(Double.parseDouble(strings[0]), Double.parseDouble(strings[1]), Double.parseDouble(strings[2])));
+            synchronized (map) {
+                map.addMapObject(marker);
+                count++;
+                if (count == regionsCapitals.length) {
+                    mainLayer.removeView(mLogTextView);
+                }
+            }
+        }
     }
 }
