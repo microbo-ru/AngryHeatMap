@@ -5,26 +5,33 @@
     tools:context=".MainActivity">
 
     <item
-        android:id="@+id/action_settings"
+        android:id="@+id/actionSettings"
         android:orderInCategory="100"
         android:title="@string/action_settings"
         app:showAsAction="never"/>
 
     <item
-        android:id="@+id/action_1"
+        android:id="@+id/actionVolume"
         android:orderInCategory="100"
         android:title="@string/action_volume"
         app:showAsAction="never"/>
 
     <item
-        android:id="@+id/action_2"
+        android:id="@+id/actionFire"
         android:orderInCategory="100"
         android:title="@string/action_fire"
         app:showAsAction="never"/>
 
     <item
-        android:id="@+id/action_3"
+        android:id="@+id/actionActions"
         android:orderInCategory="100"
         android:title="@string/action_actions"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/actionAbout"
+        android:orderInCategory="100"
+        android:title="@string/action_about"
+        android:onClick="onSettingsMenuClick"
         app:showAsAction="never"/>
 </menu>

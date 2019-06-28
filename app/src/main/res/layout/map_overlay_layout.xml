@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/overlay_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/textOverlayUp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Ш: "
+        android:textColor="@color/redColor"
+        android:visibility="visible"
+        app:layout_constraintBottom_toTopOf="@+id/textOverlayCenter"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textOverlayCenter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Д: "
+        android:textStyle="bold|italic"
+        android:visibility="visible"
+        app:layout_constraintBottom_toTopOf="@+id/textOverlayDown"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textOverlayUp" />
+
+    <TextView
+        android:id="@+id/textOverlayDown"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="В: "
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textOverlayCenter" />
+
+</android.support.constraint.ConstraintLayout>

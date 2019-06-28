@@ -1,9 +1,16 @@
 <resources>
     <string name="app_name">Open Data Map</string>
-    <string name="log_title">Everything is work normally..</string>
+    <string name="log_title">Пожалуйста, подождите. Карта загружается...</string>
 
-    <string name="action_settings">Параметры</string>
+    <string name="action_settings">Параметры настройки</string>
     <string name="action_volume">Объём заготовленной древесины</string>
     <string name="action_fire">Сгорело лесных насаждений</string>
-    <string name="action_actions">Санитарно-оздоровительные мероприятия</string>
+    <string name="action_actions">Санитарно-оздоровительные меры</string>
+    <string name="action_about">О программе</string>
+    <string name="about_text">Данная программа была\nразработана группой\nпрограммистов, дизайнеров\nи маркетологов Microbo\n8 и 9 июня 2019 года.</string>
+    <string name="about_title">О программе</string>
+    <string name="btn_settings">Сделать настройку</string>
+    <string name="btn_volume">Посчитать объём</string>
+    <string name="btn_fire">Посчитать потери</string>
+    <string name="btn_actions">Принять меры</string>
 </resources>
